@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Unit, CabinetType, InputType, CalculatorInputs, WallConfiguration } from '@/types/calculator';
-import { calculateDimensions, findClosestConfigurations } from '@/utils/calculations';
+import { calculateDimensions, findClosestConfigurations, findClosestConfigurationsByWidthAndDiagonal } from '@/utils/calculations';
 import { convertUnit } from '@/utils/unitConversion';
 import InputPanel from './InputPanel';
 import ResultPanel from './ResultPanel';
@@ -87,12 +87,17 @@ export default function Calculator() {
       const isWidthAndDiagonal = 
         activeInputs.includes('width') && activeInputs.includes('diagonal');
       
-      const configurations = findClosestConfigurations(
-        dimensions.width,
-        isWidthAndDiagonal ? null : dimensions.height,
-        cabinetType,
-        isWidthAndDiagonal ? dimensions.diagonal : undefined
-      );
+      const configurations = isWidthAndDiagonal
+        ? findClosestConfigurationsByWidthAndDiagonal(
+            dimensions.width,
+            dimensions.diagonal,
+            cabinetType
+          )
+        : findClosestConfigurations(
+            dimensions.width,
+            dimensions.height,
+            cabinetType
+          );
       
       setLowerConfig(configurations.lower);
       setUpperConfig(configurations.upper);
